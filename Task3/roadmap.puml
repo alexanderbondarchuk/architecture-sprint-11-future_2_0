@@ -1,0 +1,137 @@
+@startuml
+title Roadmap трансформации IT-ландшафта "Будущее 2.0"
+scale 0.8
+
+box "Команды" #LightBlue
+participant "Инфраструктура" as Infra
+participant "Безопасность" as Security
+participant "Data\nPlatform" as DataPlatform
+participant "Data\nEngineering" as DataEng
+participant "Backend\nTeams" as Backend
+participant "Frontend\nTeam" as Frontend
+participant "Доменные\nКоманды" as DomainTeams
+participant "SRE\nTeam" as SRE
+end box
+
+box "Бизнес-цели" #LightGreen
+participant "Быстрая\nотчетность" as Goal1
+participant "Независимые\nдомены" as Goal2
+participant "Самообслуживание" as Goal3
+participant "Compliance" as Goal4
+end box
+
+' Фаза 1: Фундамент (Месяцы 1-3)
+group Фаза 1: Фундамент [Месяцы 1-3]
+    Infra -> Infra: M1.1: Развертывание облачной платформы
+    note right: Cloud infrastructure\n2 DevOps инженера
+    
+    DataPlatform -> DataPlatform: M1.2: Миграция данных в MinIO
+    note right: 3 инженера данных\n70% исторических данных
+    
+    DataEng -> DataEng: M1.3: Настройка Kafka потоков
+    note right: Kafka cluster\n2 инженера
+    
+    Security -> Security: M1.4: Внедрение Keycloak IAM
+    note right: Единая аутентификация\nSecurity engineer
+    
+    Security -> Security: M1.5: Политики RBAC
+    note right: Compliance officer\nData owner
+end
+
+' Связи с бизнес-целями Фазы 1
+Infra --> Goal4: Безопасная\nинфраструктура
+Security --> Goal4: Контроль\nдоступа
+
+' Фаза 2: Data Lakehouse (Месяцы 4-6)
+group Фаза 2: Data Lakehouse [Месяцы 4-6]
+    DataEng -> DataEng: M2.1: Развертывание Airflow + Spark
+    note right: 4 data engineer\nАвтоматизированные пайплайны
+    
+    DataPlatform -> DataPlatform: M2.2: Миграция в Apache Iceberg
+    note right: Spark cluster\nСтруктурированные данные
+    
+    DataEng -> DataEng: M2.3: Настройка ClickHouse витрин
+    note right: Оптимизированные витрины\n2 data analyst
+    
+    DataPlatform -> DataPlatform: M2.4: Внедрение DataHub каталога
+    note right: Data lineage\nData steward
+    
+    DataEng -> DataEng: M2.5: Настройка Great Expectations
+    note right: Мониторинг качества\nQA engineer
+end
+
+' Связи с бизнес-целями Фазы 2
+DataEng --> Goal1: Отчеты за минуты
+DataEng --> Goal4: Качество данных
+
+' Фаза 3: Домены и API (Месяцы 7-9)
+group Фаза 3: Домены и API [Месяцы 7-9]
+    Backend -> Backend: M3.1: Развертывание Kong API Gateway
+    note right: 3 разработчика\nЕдиная точка входа
+    
+    DomainTeams -> DomainTeams: M3.2: Изоляция финтех домена
+    note right: Go/Java разработчики\nАвтономность
+    
+    DomainTeams -> DomainTeams: M3.3: Изоляция ИИ домена
+    note right: Python/.NET разработчики\nНезависимое развитие
+    
+    DataEng -> DataEng: M3.4: Разработка семантического слоя
+    note right: Бизнес-метрики\nBusiness analyst
+    
+    Frontend -> Frontend: M3.5: Запуск портала на Next.js
+    note right: 2 frontend разработчика\nСамообслуживание
+end
+
+' Связи с бизнес-целями Фазы 3
+DomainTeams --> Goal2: Независимые релизы
+Frontend --> Goal3: Снижение нагрузки на IT
+
+' Фаза 4: Оптимизация (Месяцы 10-12)
+group Фаза 4: Оптимизация [Месяцы 10-12]
+    SRE -> SRE: M4.1: Настройка SLA/SLO мониторинга
+    note right: 2 SRE инженера\nКритичные сервисы
+    
+    Infra -> Infra: M4.2: Автоскейлинг и оптимизация
+    note right: Auto-scaling policies\nDevOps
+    
+    DomainTeams -> DomainTeams: M4.3: Подключение новых партнеров
+    note right: API контракты\nIntegration team
+    
+    DataEng -> DataEng: M4.4: Расширение BI возможностей
+    note right: Superset\nData analyst
+end
+
+' Связи с бизнес-целями Фазы 4
+DomainTeams --> Goal2: Масштабируемость
+DataEng --> Goal3: Расширенные возможности
+
+' Критические меры качества
+box "Критические меры качества" #LightYellow
+participant "Медицинские\nсервисы" as Medical
+participant "Финансовые\nсервисы" as Financial
+end box
+
+' Взаимодействие мер качества с этапами
+Security -> Medical: PHI изоляция\nАудит доступа
+note right: M1.4-M1.5
+
+Security -> Financial: PCI compliance\nТранзакционная целостность
+note right: M1.4, M3.2
+
+DataEng -> Medical: RLS политики\nКачество данных
+note right: M2.5
+
+SRE -> Financial: SLA 99.9%\nМониторинг
+note right: M4.1
+
+' Итоговые бизнес-результаты
+note over Goal1, Goal4
+**Итоговый бизнес-эффект через 12 месяцев:**
+
+• Сокращение времени построения отчетов на 90%
+• Ускорение вывода новых продуктов на 50%
+• Снижение нагрузки на IT отдел на 40%
+• Полное соответствие регуляторным требованиям
+end note
+
+@enduml
