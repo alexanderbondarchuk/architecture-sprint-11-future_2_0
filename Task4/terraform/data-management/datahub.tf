@@ -1,22 +1,14 @@
-# DataHub configuration for data catalog and lineage
+# DataHub configuration
 
 output "datahub_info" {
-  value = "DataHub ${var.datahub_version} will run on port ${var.datahub_port}"
+  value = "DataHub ${var.datahub_version} on port ${var.datahub_port}"
 }
 
-output "datahub_components" {
+output "datahub_features" {
   value = [
-    "Data Catalog",
-    "Data Lineage",
-    "Metadata Management",
-    "Search and Discovery"
-  ]
-}
-
-output "datahub_integrations" {
-  value = [
-    "PostgreSQL for metadata",
-    "Kafka for events",
-    "Elasticsearch for search"
+    "Data catalog and discovery",
+    "Data lineage tracking",
+    "Metadata management",
+    "Data quality monitoring"
   ]
 }
