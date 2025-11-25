@@ -1,0 +1,87 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(БП, "Бизнес-пользователь", "Создает отчеты через портал")
+Person(АН, "Аналитик", "Анализирует данные через BI")
+
+' Медицинский домен
+System_Boundary(medical, "Медицинский домен") {
+    Container(med_system, "Медицинская система", ".NET", "Управление клиниками и пациентами")
+    Container(med_api, "API медицинских сервисов", "Go", "Доступ к медицинским данным")
+}
+
+' Финтех домен
+System_Boundary(fintech, "Финтех домен") {
+    Container(fin_services, "Финтех-сервисы", "Go", "Банковские операции")
+    Container(fin_api, "API финтех-сервисов", "Go", "Финансовые транзакции")
+}
+
+' ИИ домен
+System_Boundary(ai, "ИИ домен") {
+    Container(ai_services, "ИИ-сервисы", "Python + .NET", "ML модели")
+    Container(ai_api, "API ИИ-сервисов", "Go", "Скоринг и рекомендации")
+}
+
+' Партнерский домен
+System_Boundary(partners, "Партнерский домен") {
+    Container(pharma_api, "API фарма-партнеров", "REST", "Данные препаратов")
+    Container(device_api, "API производителей", "REST", "Телеметрия оборудования")
+}
+
+' Аналитический домен
+System_Boundary(analytics, "Аналитический домен") {
+    Container(portal, "Портал самообслуживания", "Next.js", "Конструктор отчетов")
+    Container(bi_tools, "BI-платформа", "Power BI + Superset", "Дашборды")
+    ContainerDb(serving, "Serving Layer", "ClickHouse", "Оптимизированные витрины")
+}
+
+' Платформа данных
+System_Boundary(data_platform, "Платформа данных") {
+    Container(airflow, "Оркестрация", "Apache Airflow", "ETL/ELT процессы")
+    Container(spark, "Обработка данных", "Apache Spark", "Трансформации")
+    ContainerDb(raw_zone, "Raw Zone", "MinIO", "Сырые данные")
+    ContainerDb(iceberg, "Iceberg Tables", "Apache Iceberg", "Очищенные данные")
+}
+
+' Унаследованные системы
+Container(legacy_dwh, "Унаследованный DWH", "SQL Server 2008", "Исторические данные")
+
+' === ПОТОКИ ДАННЫХ МЕЖДУ ДОМЕНАМИ ===
+
+' Медицинский домен -> Платформа данных
+Rel(med_system, raw_zone, "<b>Операционные данные</b>\nАгрегированные метрики клиник\nДанные услуг (без PHI)", "Kafka")
+Rel(med_api, raw_zone, "<b>API данные</b>\nМетрики производительности\nСтатистика услуг", "REST API")
+
+' Финтех домен -> Платформа данных
+Rel(fin_services, raw_zone, "<b>Финансовые транзакции</b>\nПлатежи и операции\nСчета и балансы", "Kafka")
+Rel(fin_api, raw_zone, "<b>Финансовые отчеты</b>\nАгрегированные метрики\nKPI финансовых сервисов", "REST API")
+
+' ИИ домен -> Платформа данных
+Rel(ai_services, raw_zone, "<b>Данные для обучения</b>\nАнонимизированные датасеты\nФичи для моделей", "Batch")
+Rel(ai_api, raw_zone, "<b>Результаты ML</b>\nСкоринги и предсказания\nМетрики моделей", "REST API")
+
+' Партнерский домен -> Платформа данных
+Rel(pharma_api, raw_zone, "<b>Данные препаратов</b>\nКаталоги и цены\nЗаказы и поставки", "REST API")
+Rel(device_api, raw_zone, "<b>Телеметрия</b>\nДанные оборудования\nМетрики использования", "Kafka")
+
+' Платформа данных -> Аналитический домен
+Rel(iceberg, serving, "<b>Очищенные данные</b>\nСтруктурированные таблицы\nГотовые к анализу данные", "ETL")
+Rel(spark, serving, "<b>Трансформированные данные</b>\nАгрегированные витрины\nБизнес-метрики", "Spark Jobs")
+
+' Аналитический домен -> Пользователи
+Rel(portal, БП, "<b>Интерактивные отчеты</b>\nПользовательские дашборды\nКонструктор запросов", "HTTPS")
+Rel(bi_tools, АН, "<b>Аналитические отчеты</b>\nГотовые дашборды\nВизуализации данных", "HTTPS")
+
+' Междоменное взаимодействие
+Rel(med_api, ai_api, "<b>Запросы диагностики</b>\nДанные для анализа\nПараметры ML-моделей", "gRPC")
+Rel(fin_api, med_api, "<b>Валидация платежей</b>\nПроверка страховых данных\nФинансовая история", "REST")
+
+' Обработка данных в платформе
+Rel(airflow, spark, "<b>Оркестрация пайплайнов</b>\nРасписание задач\nМониторинг выполнения", "REST API")
+Rel(spark, iceberg, "<b>Трансформации данных</b>\nОчистка и обогащение\nСоздание витрин", "Spark Jobs")
+Rel(raw_zone, spark, "<b>Сырые данные</b>\nПоступление данных\nПодготовка к обработке", "S3 API")
+
+' Миграция с легаси
+Rel(legacy_dwh, raw_zone, "<b>Исторические данные</b>\nМиграция витрин\nАрхивные отчеты", "ETL")
+
+@enduml

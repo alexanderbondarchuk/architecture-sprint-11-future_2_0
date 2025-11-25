@@ -1,0 +1,107 @@
+@startuml
+title Диаграмма автоматизации развёртывания платформы "Будущее 2.0"
+left to right direction
+
+package "Этап 1: Terraform Managed Infrastructure" {
+  component "Terraform\nConfiguration" as tf {
+    component "main.tf" as main
+    component "variables.tf" as vars
+    component "outputs.tf" as outputs
+  }
+  
+  package "Cloud Provider (Yandex Cloud)" as yc {
+    component "VPC Network" as vpc #LightGreen
+    component "Subnets" as subnets #LightGreen
+    component "Security Groups" as sg #LightGreen
+    component "Load Balancer" as lb #LightGreen
+    
+    database "Managed PostgreSQL" as pg #LightGreen
+    database "Managed ClickHouse" as ch #LightGreen
+    database "Object Storage" as s3 #LightGreen
+    database "Managed Kafka" as kafka #LightGreen
+    
+    node "Virtual Machines" as vms #LightGreen {
+      component "K8s Master" as k8s_master
+      component "K8s Nodes" as k8s_nodes
+      component "Bastion Host" as bastion
+    }
+  }
+}
+
+package "Этап 2: Manual Configuration" {
+  component "Ansible\nPlaybooks" as ansible #LightBlue
+  component "Helm Charts" as helm #LightBlue
+  component "Manual Setup" as manual #LightBlue
+  
+  package "Kubernetes Cluster" as k8s {
+    component "Apache Spark" as spark_k8s #LightBlue
+    component "Apache Airflow" as airflow_k8s #LightBlue
+    component "Keycloak" as keycloak_k8s #LightBlue
+    component "DataHub" as datahub_k8s #LightBlue
+    component "Superset" as superset_k8s #LightBlue
+  }
+}
+
+package "Этап 3: Data Pipeline Automation" {
+  component "CI/CD Pipeline" as cicd #LightYellow
+  component "Data Migration\nScripts" as migration #LightYellow
+  component "Monitoring\nStack" as monitoring #LightYellow
+}
+
+' Связи Terraform
+tf --> vpc : creates
+tf --> subnets : creates
+tf --> sg : creates
+tf --> lb : creates
+tf --> pg : creates
+tf --> ch : creates
+tf --> s3 : creates
+tf --> kafka : creates
+tf --> vms : creates
+
+' Ручная настройка
+vms --> ansible : provision
+ansible --> k8s : configures
+helm --> k8s : deploys
+manual --> k8s : initial setup
+
+' Автоматизация пайплайнов
+cicd --> k8s : deploys apps
+migration --> pg : data load
+migration --> ch : data load
+
+' Зависимости между компонентами
+k8s --> spark_k8s : runs
+k8s --> airflow_k8s : runs
+k8s --> keycloak_k8s : runs
+k8s --> datahub_k8s : runs
+k8s --> superset_k8s : runs
+
+pg --> airflow_k8s : connects
+ch --> superset_k8s : connects
+kafka --> spark_k8s : connects
+
+legend right
+  | Цвет | Управление |
+  | <#LightGreen> | Terraform Managed |
+  | <#LightBlue> | Manual Configuration |
+  | <#LightYellow> | Pipeline Automation |
+end legend
+
+note right of tf
+  **Terraform управляет:**
+  - Сетевая инфраструктура
+  - Управляемые сервисы БД
+  - Виртуальные машины
+  - Базовые ресурсы
+end note
+
+note right of ansible
+  **Ручная настройка:**
+  - Kubernetes кластер
+  - Приложения в K8s
+  - Конфигурация сервисов
+  - Настройка безопасности
+end note
+
+@enduml

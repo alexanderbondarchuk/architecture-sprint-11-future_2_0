@@ -1,0 +1,124 @@
+{
+    "basePath": "/",
+    "baseUrl": "",
+    "editUrl": "",
+    "logoFile": "logo.svg",
+    "jsFile": "",
+    "toggles": {
+      "showChart": true,
+      "showTagFilter": true,
+      "showQuadrantList": true,
+      "showEmptyRings": false
+    },
+    "sections": ["radar", "tags", "list"],
+    "colors": {
+      "foreground": "#f8f9fa",
+      "background": "#1a202c",
+      "highlight": "#4299e1",
+      "content": "#fff",
+      "text": "#e2e8f0",
+      "link": "#63b3ed",
+      "border": "rgba(255, 255, 255, 0.1)",
+      "tag": "rgba(255, 255, 255, 0.15)"
+    },
+    "quadrants": [
+      {
+        "id": "languages-and-frameworks",
+        "title": "Языки и Фреймворки",
+        "description": "Технологии разработки и программирования",
+        "color": "#3182ce"
+      },
+      {
+        "id": "methods-and-patterns",
+        "title": "Методы и Паттерны",
+        "description": "Архитектурные подходы и методологии",
+        "color": "#38a169"
+      },
+      {
+        "id": "platforms-and-operations",
+        "title": "Платформы и Операции",
+        "description": "Инфраструктура и платформенные сервисы",
+        "color": "#d69e2e"
+      },
+      {
+        "id": "tools",
+        "title": "Инструменты",
+        "description": "Инструменты разработки и утилиты",
+        "color": "#e53e3e"
+      }
+    ],
+    "rings": [
+      {
+        "id": "adopt",
+        "title": "Устоявшиеся",
+        "description": "Используются в проде, низкий уровень риска, рекомендуются к широкому применению",
+        "color": "#38a169",
+        "radius": 0.5,
+        "strokeWidth": 5
+      },
+      {
+        "id": "trial",
+        "title": "На подъёме",
+        "description": "Пробные технологии, проверены на реальной проблеме, но возможны невыявленные ограничения",
+        "color": "#3182ce",
+        "radius": 0.69,
+        "strokeWidth": 3
+      },
+      {
+        "id": "assess",
+        "title": "Оценочные",
+        "description": "Многообещающие технологии с потенциальной ценностью, подходят для прототипирования",
+        "color": "#d69e2e",
+        "radius": 0.85,
+        "strokeWidth": 2
+      },
+      {
+        "id": "hold",
+        "title": "На выводе",
+        "description": "Технологии, нежелательные для новых проектов, постепенно выводятся из ландшафта",
+        "color": "#e53e3e",
+        "radius": 1,
+        "strokeWidth": 0.75
+      }
+    ],
+    "flags": {
+      "new": {
+        "color": "#68d391",
+        "title": "Новое",
+        "titleShort": "N",
+        "description": "Новая технология в радаре"
+      },
+      "changed": {
+        "color": "#4299e1",
+        "title": "Изменено",
+        "titleShort": "C",
+        "description": "Изменен статус технологии"
+      },
+      "default": {
+        "description": "Статус не менялся"
+      }
+    },
+    "chart": {
+      "size": 800,
+      "blipSize": 12
+    },
+    "social": [
+    ],
+    "imprint": "",
+    "labels": {
+      "title": "Технический радар «Будущее 2.0»",
+      "imprint": "",
+      "quadrant": "Технические области",
+      "quadrantOverview": "Подробнее",
+      "zoomIn": "Приблизить",
+      "filterByTag": "Отфильтровать по тегу",
+      "footer": "Технологическая трансформация платформы данных • Архитектура для масштабирования и инноваций",
+      "notUpdated": "Давно не менялось",
+      "notFound": "404 - Технология не найдена",
+      "pageAbout": "О радаре",
+      "pageOverview": "Обзор технологий",
+      "pageSearch": "Поиск",
+      "searchPlaceholder": "Поиск технологий...",
+      "metaDescription": "Технический радар компании «Будущее 2.0» - стратегия технологической трансформации платформы данных"
+    }
+}
